@@ -1,4 +1,5 @@
 import "./style.css";
+import { saveTodos, loadTodos } from "./storage.js";
 
 /**
  * 1. INITIALISATION & ÉLÉMENTS DU DOM
@@ -7,19 +8,22 @@ const ul = document.querySelector("ul");
 const form = document.querySelector("form");
 const input = document.querySelector("form > input");
 
-const todos = [
-  {
-    text: "Faire du JavaScript",
-    done: false,
-    editMode: false,
-  },
-];
+// Logique de chargement : si rien en mémoire, on met la tâche par défaut
+const savedData = loadTodos();
+const todos = savedData
+  ? savedData
+  : [
+      {
+        text: "Faire du JavaScript",
+        done: false,
+        editMode: false,
+      },
+    ];
 
 /**
  * 2. GESTIONNAIRES D'ÉVÉNEMENTS GÉNÉRAUX (LISTENERS)
  */
 
-// Ajout d'une todo via le formulaire
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const value = input.value;
@@ -27,7 +31,6 @@ form.addEventListener("submit", (event) => {
   addTodo(value);
 });
 
-// Sortie du mode édition avec la touche 'Echap'
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     const todoInEdit = todos.find((t) => t.editMode);
@@ -42,10 +45,8 @@ document.addEventListener("keydown", (event) => {
  * 3. LOGIQUE D'AFFICHAGE (RENDERING)
  */
 
-// Fonction principale : vide la liste et reconstruit le DOM
 const displayTodo = () => {
   const todosNode = todos.map((todo, index) => {
-    // Rendu conditionnel selon l'état editMode
     return todo.editMode
       ? createTodoEditElement(todo, index)
       : createTodoElement(todo, index);
@@ -54,20 +55,17 @@ const displayTodo = () => {
   ul.append(...todosNode);
 };
 
-// Mode Lecture : Affiche la tâche normalement
 const createTodoElement = (todo, index) => {
   const li = document.createElement("li");
 
-  // Bouton Supprimer
   const buttonDelete = document.createElement("button");
   buttonDelete.innerHTML = "Supprimer";
   buttonDelete.classList.add("danger");
   buttonDelete.addEventListener("click", (event) => {
-    event.stopPropagation(); // Évite de déclencher le toggle du li
+    event.stopPropagation();
     deleteTodo(index);
   });
 
-  // Bouton Editer
   const buttonEdit = document.createElement("button");
   buttonEdit.innerHTML = "Edit";
   buttonEdit.classList.add("primary");
@@ -76,13 +74,11 @@ const createTodoElement = (todo, index) => {
     toggleEditMode(index);
   });
 
-  // Contenu texte et statut
   li.innerHTML = `
     <span class="todo ${todo.done ? "done" : ""}"></span>
     <p class="${todo.done ? "done" : ""}">${todo.text}</p>
   `;
 
-  // Gestion du Simple clic (Toggle statut) vs Double clic (Mode Edition)
   let timer;
   li.addEventListener("click", (event) => {
     if (event.detail === 1) {
@@ -97,14 +93,12 @@ const createTodoElement = (todo, index) => {
   return li;
 };
 
-// Mode Édition : Affiche l'input de modification
 const createTodoEditElement = (todo, index) => {
   const li = document.createElement("li");
   const inputEdit = document.createElement("input");
   inputEdit.type = "text";
   inputEdit.value = todo.text;
 
-  // Sauvegarde sur touche Entrée
   inputEdit.addEventListener("keydown", (event) => {
     if (event.key === "Enter") editTodo(index, inputEdit);
   });
@@ -123,10 +117,7 @@ const createTodoEditElement = (todo, index) => {
   });
 
   li.append(inputEdit, buttonSave, buttonCancel);
-
-  // Autofocus sur l'input dès qu'il apparaît
   setTimeout(() => inputEdit.focus(), 0);
-
   return li;
 };
 
@@ -138,27 +129,28 @@ const addTodo = (text) => {
   text = text.trim();
   if (text) {
     todos.push({
-      // Petite astuce : Capitalize la première lettre
       text: `${text[0].toUpperCase()}${text.slice(1)}`,
       done: false,
       editMode: false,
     });
+    saveTodos(todos);
     displayTodo();
   }
 };
 
 const deleteTodo = (index) => {
   todos.splice(index, 1);
+  saveTodos(todos);
   displayTodo();
 };
 
 const toggleTodo = (index) => {
   todos[index].done = !todos[index].done;
+  saveTodos(todos);
   displayTodo();
 };
 
 const toggleEditMode = (index) => {
-  // Désactive les autres modes édition pour n'en avoir qu'un à la fois
   todos.forEach((t, i) => {
     if (i !== index) t.editMode = false;
   });
@@ -171,9 +163,9 @@ const editTodo = (index, input) => {
   if (value) {
     todos[index].text = value;
     todos[index].editMode = false;
+    saveTodos(todos);
     displayTodo();
   }
 };
 
-// Premier rendu au chargement
 displayTodo();
