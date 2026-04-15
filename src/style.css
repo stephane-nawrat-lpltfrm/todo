@@ -1,11 +1,18 @@
+/* 1. Imports et Variables */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
 
-* {
-  box-sizing: border-box;
+:root {
+  --font-text: "Menlo", "Monaco", "Courier New", monospace;
+  --font-ui: "Inter", sans-serif;
+  --primary-color: #303030;
+  --border-color: #eee;
+  --bg-color: #fafafa;
+  --touch-target: 44px; /* Hauteur standard pour mobile */
 }
 
-p {
-  margin: 0;
+/* 2. Reset et Base */
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -14,97 +21,146 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Menlo", "Monaco", "Courier New", monospace;
+  background-color: var(--bg-color);
+  font-family: var(--font-text);
   -webkit-font-smoothing: antialiased;
+  color: #333;
 }
 
+p {
+  margin: 0;
+}
+
+/* 3. Layout Principal */
 .container {
-  width: 500px;
-  border: 1px solid #eee;
-  border-radius: 3px;
-  padding: 20px;
+  width: 95%; /* Mobile friendly */
+  max-width: 500px; /* Largeur max sur desktop */
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* 4. Formulaire et Saisies */
 form {
   display: flex;
-  margin-bottom: 20px;
-}
-
-button {
-  padding: 5px 15px;
-  border: 0px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 0 3px;
-  outline: 0;
-  color: white;
-  font-family: "Inter", sans-serif;
-  font-weight: 600;
-}
-
-button.danger {
-  background: #303030;
-}
-
-button.primary {
-  background: #303030;
-}
-
-button.success {
-  background: #303030;
+  gap: 10px; /* Espace uniforme entre input et bouton */
+  margin-bottom: 24px;
 }
 
 input {
+  height: var(--touch-target);
   padding: 8px 15px;
   outline: 0;
   border: 1px solid #ddd;
-  border-radius: 3px;
-  font-family: "Menlo", monospace;
+  border-radius: 6px;
+  font-family: var(--font-text);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: var(--primary-color);
 }
 
 form input {
-  flex: 1;
-  margin-right: 15px;
+  flex: 1; /* L'input prend toute la place restante */
 }
 
+/* 5. Boutons Uniformes */
+button {
+  height: var(--touch-target);
+  padding: 0 16px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 13px;
+  color: white;
+  background: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition:
+    opacity 0.2s,
+    transform 0.1s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Variantes de boutons (au cas où tu veuilles changer les couleurs) */
+button.danger,
+button.primary,
+button.success {
+  background: var(--primary-color);
+}
+
+/* 6. Liste de Todos */
 ul {
   padding: 0;
+  margin: 0;
   list-style: none;
 }
 
 li {
   display: flex;
   align-items: center;
-  padding: 10px 0px;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
   cursor: pointer;
 }
 
-li:hover {
-  border-radius: 5px;
+li:last-child {
+  border-bottom: none;
 }
 
-li input {
-  flex: 1;
-}
-
+/* Zone de texte du Todo */
 li p {
   flex: 1;
+  font-size: 15px;
+  line-height: 1.4;
+  word-break: break-word; /* Evite que le texte dépasse sur mobile */
 }
 
 li p.done {
   text-decoration: line-through;
+  color: #999;
 }
 
+/* Pastille d'état */
 li .todo {
   flex: 0 0 20px;
   height: 20px;
-  border-radius: 30px;
-  margin-right: 15px;
-  border: 2px solid #333;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+  transition: background 0.2s;
 }
 
 li .todo.done {
-  background: #333;
+  background: var(--primary-color);
+}
+
+/* Boutons d'action dans la liste (un peu plus compacts mais même hauteur) */
+li button {
+  height: 40px; /* Légèrement réduit pour la liste mais reste accessible */
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* 7. Mode Edition (Input spécifique) */
+li input {
+  flex: 1;
+  height: 36px;
 }
