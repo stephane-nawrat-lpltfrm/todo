@@ -1,5 +1,11 @@
-* body {
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+* {
   box-sizing: border-box;
+}
+
+p {
+  margin: 0;
 }
 
 body {
@@ -8,10 +14,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-p {
-  margin: 0;
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
 }
 
 .container {
@@ -35,6 +39,21 @@ button {
   cursor: pointer;
   margin: 0 3px;
   outline: 0;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+}
+
+button.danger {
+  background: #303030;
+}
+
+button.primary {
+  background: #303030;
+}
+
+button.success {
+  background: #303030;
 }
 
 input {
@@ -42,6 +61,7 @@ input {
   outline: 0;
   border: 1px solid #ddd;
   border-radius: 3px;
+  font-family: "Menlo", monospace;
 }
 
 form input {
@@ -58,10 +78,23 @@ li {
   display: flex;
   align-items: center;
   padding: 10px 0px;
+  cursor: pointer;
+}
+
+li:hover {
+  border-radius: 5px;
+}
+
+li input {
+  flex: 1;
 }
 
 li p {
   flex: 1;
+}
+
+li p.done {
+  text-decoration: line-through;
 }
 
 li .todo {
